@@ -44,7 +44,7 @@ export default function MessageList({ messages, isLoading }: MessageListProps) {
         </div>
       ) : (
         <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
-          {messages.map((message, index) => (
+          {messages.map((message) => (
             <div key={message.id} className="space-y-6">
               {/* User Message */}
               {message.role === "user" && (
