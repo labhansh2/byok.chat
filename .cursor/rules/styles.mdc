@@ -1,0 +1,314 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+Cursor Rules for Variable-Driven Tailwind CSS Themes
+These rules guide the creation of Tailwind CSS styles that are highly modular, variable-driven, and compatible with a "Generate Theme" feature. The goal is to allow users to customize themes by editing variables and enable a model to generate theme values based on user prompts (e.g., "Ghibli," "glassy," "slimy").
+General Principles
+
+Maximize Use of CSS Variables: Convert all style properties that can be parameterized (e.g., colors, border sizes, radii, padding, margins, font sizes, etc.) into CSS custom properties (variables) using the -- prefix.
+Descriptive Variable Names: Use highly descriptive, semantic variable names that clearly indicate their purpose (e.g., --primary-button-bg-color instead of --button-bg) to ensure clarity for both users and the model generating themes.
+Tailwind Compatibility: Use Tailwind CSS utility classes wherever possible, but define custom properties in a :root or equivalent scope for theme variables to allow dynamic overrides.
+Support Theme Generation: Structure styles so that a model can map user prompts (e.g., "Ghibli," "glassy") to appropriate variable values by understanding the context of each variable’s purpose.
+Modularity and Reusability: Organize variables logically (e.g., by component or purpose) and ensure they are reusable across the application.
+Avoid Hardcoding: Never hardcode style values (e.g., bg-blue-500, border-2) unless explicitly requested. Use variables to allow flexibility.
+Documentation: Include comments explaining the purpose of each variable and how it relates to the theme generation feature.
+
+Implementation Details
+1. Defining CSS Variables
+
+Place all theme-related variables in a :root scope or a dedicated CSS file (e.g., theme.css) for global access.
+Group variables by category (e.g., colors, typography, spacing, borders) for organization.
+Example::root {
+  /* Color Variables */
+  --primary-bg-color: #ffffff; /* Background color for main content areas */
+  --accent-color: #3b82f6; /* Primary accent for buttons, links, etc. */
+  --text-primary-color: #1f2937; /* Main text color */
+  --border-primary-color: #d1d5db; /* Default border color */
+
+  /* Border Variables */
+  --border-radius-sm: 0.25rem; /* Small radius for buttons, cards */
+  --border-width-default: 1px; /* Default border width */
+
+  /* Spacing Variables */
+  --padding-button: 0.5rem 1rem; /* Padding for buttons */
+  --margin-container: 1rem; /* Margin for main containers */
+
+  /* Typography Variables */
+  --font-size-base: 1rem; /* Base font size for body text */
+  --font-size-heading: 1.5rem; /* Font size for headings */
+}
+
+
+
+2. Using Variables in Tailwind
+
+Use Tailwind’s bg-[var(--variable)], text-[var(--variable)], etc., to apply custom properties within Tailwind classes.
+For properties not directly supported by Tailwind utilities (e.g., complex padding), use inline styles or custom CSS with variables.
+Example:<button class="bg-[var(--primary-button-bg-color)] text-[var(--button-text-color)] rounded-[var(--border-radius-sm)] border-[var(--border-width-default)] border-[var(--border-primary-color)] px-[var(--padding-button-x)] py-[var(--padding-button-y)]">
+  Click Me
+</button>
+
+
+
+3. Supporting the "Generate Theme" Feature
+
+Variable Context: Ensure variable names are descriptive enough for a model to infer their purpose. For example:
+--ghibli-primary-bg-color: Suggests a soft, pastel background inspired by Studio Ghibli aesthetics.
+--glassy-border-color: Implies a translucent or frosted-glass-like border.
+--slimy-accent-color: Suggests a vibrant, glossy color for accents.
+
+
+Theme Prompt Mapping: Provide a JSON schema or comment block in the CSS file to guide the model on how to interpret prompts and map them to variable values. Example:/* Theme Prompt Mapping for Model
+ * Prompt: "Ghibli" -> Soft, earthy, pastel colors (e.g., --primary-bg-color: #f0f4c3)
+ * Prompt: "Glassy" -> Translucent, frosted, light colors (e.g., --primary-bg-color: rgba(255, 255, 255, 0.8))
+ * Prompt: "Slimy" -> Glossy, vibrant, green-tinted colors (e.g., --accent-color: #22c55e)
+ */
+
+
+Dynamic Theme Generation: Allow the model to override :root variables based on the prompt. Example output for a "Ghibli" theme::root {
+  --primary-bg-color: #f0f4c3; /* Soft pastel green for Ghibli aesthetic */
+  --accent-color: #a3e635; /* Vibrant yet natural green */
+  --text-primary-color: #4b5e40; /* Earthy text color */
+  --border-radius-sm: 0.5rem; /* Softer corners for organic feel */
+}
+
+
+
+4. Tailwind Configuration
+
+Extend Tailwind’s configuration to include custom properties for unsupported styles (e.g., complex gradients, shadows).
+Example tailwind.config.js:module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        'primary-bg': 'var(--primary-bg-color)',
+        'accent': 'var(--accent-color)',
+      },
+      borderRadius: {
+        'sm': 'var(--border-radius-sm)',
+      },
+      borderWidth: {
+        'default': 'var(--border-width-default)',
+      },
+    },
+  },
+  plugins: [],
+};
+
+
+Use these custom utilities in HTML: class="bg-primary-bg rounded-sm border-default".
+
+5. Component Styling
+
+Apply variables consistently across components to ensure theme consistency.
+Example React component:function Button({ children }) {
+  return (
+    <button
+      className="
+        bg-[var(--primary-button-bg-color)]
+        text-[var(--button-text-color)]
+        rounded-[var(--border-radius-sm)]
+        border-[var(--border-width-default)]
+        border-[var(--border-primary-color)]
+        px-[var(--padding-button-x)]
+        py-[var(--padding-button-y)]
+        hover:bg-[var(--primary-button-hover-bg-color)]
+      "
+    >
+      {children}
+    </button>
+  );
+}
+
+
+
+6. Theme Generation API Integration
+
+Provide a mechanism
+
+System: mechanism for the "Generate Theme" feature, assuming a backend model will handle the theme generation logic. The mechanism should allow users to input a theme prompt (e.g., "Ghibli," "glassy," "slimy") and receive a set of updated CSS variable values that can be applied to the application.
+
+# Theme Generation Mechanism for Variable-Driven Tailwind CSS Application
+
+This document outlines the mechanism for the "Generate Theme" feature, enabling users to input a theme prompt (e.g., "Ghibli," "glassy," "slimy") and receive updated CSS variable values that reflect the desired aesthetic. The mechanism integrates with a backend model to generate theme values based on the context of the application's style variables and Tailwind CSS framework.
+Overview
+The "Generate Theme" feature allows users to input a descriptive theme prompt, and a backend model generates appropriate values for the CSS custom properties (variables) defined in the application. These variables control colors, borders, radii, spacing, typography, and other stylable properties, ensuring a cohesive and customizable theme.
+Components
+
+CSS Variables: Defined in a :root scope or dedicated theme.css file, using descriptive names (e.g., --primary-button-bg-color, --border-radius-sm) as per the Cursor rules.
+Tailwind CSS Integration: Variables are applied using Tailwind’s custom property syntax (e.g., bg-[var(--primary-bg-color)]) and extended in tailwind.config.js.
+Theme Prompt Input: A user interface (e.g., text input field) where users enter a theme prompt.
+Backend Model: A machine learning model (e.g., a fine-tuned language or generative model) that interprets the prompt and maps it to appropriate variable values.
+API Endpoint: A server endpoint that receives the prompt, processes it via the model, and returns updated variable values.
+Frontend Integration: A mechanism to apply the generated theme to the application dynamically.
+
+Mechanism
+1. Theme Prompt Submission
+
+User Action: The user submits a theme prompt (e.g., "Ghibli") via a form or input field in the application.
+Frontend: The prompt is sent to the backend via an API call (e.g., POST /api/generate-theme with JSON payload { "prompt": "Ghibli" }).
+
+2. Backend Processing
+
+API Endpoint: The server receives the prompt and passes it to the backend model.
+Model Context: The model is provided with:
+A list of all CSS variables (e.g., --primary-bg-color, --accent-color) and their purposes (via comments or a JSON schema).
+A mapping of theme aesthetics to variable values, e.g.:{
+  "Ghibli": {
+    "description": "Soft, pastel, earthy colors with organic, rounded shapes",
+    "examples": {
+      "--primary-bg-color": "#f0f4c3",
+      "--accent-color": "#a3e635",
+      "--border-radius-sm": "0.5rem"
+    }
+  },
+  "Glassy": {
+    "description": "Translucent, frosted, light colors with subtle shadows",
+    "examples": {
+      "--primary-bg-color": "rgba(255, 255, 255, 0.8)",
+      "--border-color": "rgba(200, 200, 200, 0.5)",
+      "--box-shadow": "0 4px 6px rgba(0, 0, 0, 0.1)"
+    }
+  },
+  "Slimy": {
+    "description": "Glossy, vibrant, green-tinted colors with bold contrasts",
+    "examples": {
+      "--accent-color": "#22c55e",
+      "--text-primary-color": "#1a3c34",
+      "--border-width-default": "2px"
+    }
+  }
+}
+
+
+
+
+Model Processing: The model generates a complete set of variable values based on the prompt, using its understanding of the aesthetic and the variable context.
+Output: The backend returns a JSON object containing the updated variable values, e.g.:{
+  "--primary-bg-color": "#f0f4c3",
+  "--accent-color": "#a3e635",
+  "--text-primary-color": "#4b5e40",
+  "--border-radius-sm": "0.5rem",
+  "--border-width-default": "1px",
+  "--padding-button-x": "1rem",
+  "--padding-button-y": "0.5rem",
+  "--font-size-base": "1rem",
+  "--font-size-heading": "1.5rem"
+}
+
+
+
+3. Applying the Theme
+
+Frontend Receipt: The frontend receives the JSON response and updates the CSS variables dynamically.
+Implementation:
+Use JavaScript to set the variables on the :root element:const applyTheme = (themeVariables) => {
+  const root = document.documentElement;
+  Object.entries(themeVariables).forEach(([key, value]) => {
+    root.style.setProperty(key, value);
+  });
+};
+
+
+Example API call and application:async function generateTheme(prompt) {
+  const response = await fetch('/api/generate-theme', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ prompt })
+  });
+  const themeVariables = await response.json();
+  applyTheme(themeVariables);
+}
+
+// Example usage
+generateTheme('Ghibli');
+
+
+
+
+React Integration: For a React application, store the theme variables in state or context and apply them:import { useState } from 'react';
+
+function ThemeGenerator() {
+  const [prompt, setPrompt] = useState('');
+
+  const handleGenerateTheme = async () => {
+    const response = await fetch('/api/generate-theme', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt })
+    });
+    const themeVariables = await response.json();
+    applyTheme(themeVariables);
+  };
+
+  return (
+    <div>
+      <input
+        type="text"
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        placeholder="Enter theme (e.g., Ghibli, glassy, slimy)"
+        className="border-[var(--border-width-default)] border-[var(--border-primary-color)] rounded-[var(--border-radius-sm)] px-[var(--padding-button-x)] py-[var(--padding-button-y)]"
+      />
+      <button
+        onClick={handleGenerateTheme}
+        className="bg-[var(--primary-button-bg-color)] text-[var(--button-text-color)] rounded-[var(--border-radius-sm)] px-[var(--padding-button-x)] py-[var(--padding-button-y)]"
+      >
+        Generate Theme
+      </button>
+    </div>
+  );
+}
+
+function applyTheme(themeVariables) {
+  const root = document.documentElement;
+  Object.entries(themeVariables).forEach(([key, value]) => {
+    root.style.setProperty(key, value);
+  });
+}
+
+
+
+4. Example Theme Application
+
+Initial Styles: Define default variables in theme.css::root {
+  --primary-bg-color: #ffffff;
+  --accent-color: #3b82f6;
+  --text-primary-color: #1f2937;
+  --border-primary-color: #d1d5db;
+  --border-radius-sm: 0.25rem;
+  --border-width-default: 1px;
+  --padding-button-x: 1rem;
+  --padding-button-y: 0.5rem;
+  --font-size-base: 1rem;
+  --font-size-heading: 1.5rem;
+}
+
+
+Generated Theme (e.g., "Ghibli"): After the user submits the "Ghibli" prompt, the model returns:{
+  "--primary-bg-color": "#f0f4c3",
+  "--accent-color": "#a3e635",
+  "--text-primary-color": "#4b5e40",
+  "--border-primary-color": "#8b9a5b",
+  "--border-radius-sm": "0.5rem",
+  "--border-width-default": "1px",
+  "--padding-button-x": "1rem",
+  "--padding-button-y": "0.5rem",
+  "--font-size-base": "1rem",
+  "--font-size-heading": "1.5rem"
+}
+
+
+Result: The application dynamically updates to reflect the Ghibli-inspired theme with soft, pastel colors and organic shapes.
+
+Notes
+
+Model Training: The backend model should be fine-tuned on a dataset of aesthetic descriptions and corresponding CSS variable values to accurately map prompts to themes.
+Variable Completeness: Ensure the model generates values for all defined variables to avoid partial theming.
+Error Handling: Implement validation to ensure generated values are valid CSS properties (e.g., valid colors, units for sizes).
+Performance: Cache generated themes client-side to reduce API calls for frequently used themes.
+Extensibility: Allow users to save and load custom themes by storing variable sets in local storage or a backend database.
+
+This mechanism ensures a flexible, user-friendly way to generate and apply dynamic themes while leveraging Tailwind CSS and CSS variables for maximum customizability.

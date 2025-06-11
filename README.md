@@ -1,36 +1,22 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# byok.chat
 
-## Getting Started
+A superior AI Chat Application that lets you add LLM Providers using your own key.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+-[ ] Add LLM Provider using your own key 
+-[ ] Augmented Rendering of the Generated Content using Blocks 
+-[ ] Strong Integrations Support powered by MCPs 
+-[ ] Chat organization based on Semantic Meaning 
+-[ ] Theme Customization + Generation
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Prompt 
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Okay, here me out, I am thinking about a brand new rendering l am thinking about rendering blocks wise kinda like notion 
 
-## Learn More
+I want to have custom blocks like rich text, code, image, quote, etc 
 
-To learn more about Next.js, take a look at the following resources:
+also this should be really extensible as the extensions can create custom blocks to render like let's say there is a mermaid chart extension, the blocks syntax will be the mermaid syntax while the blcoks is the mermaid chart blocks 
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+I am kinda 
