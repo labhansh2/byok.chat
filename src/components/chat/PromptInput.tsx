@@ -8,9 +8,18 @@ interface PromptInputProps {
   disabled?: boolean;
   selectedModel: string;
   onModelChange: (model: string) => void;
+  placeholder?: string;
+  onInputChange?: (value: string) => void;
 }
 
-export default function PromptInput({ onSendMessage, disabled, selectedModel, onModelChange }: PromptInputProps) {
+export default function PromptInput({
+  onSendMessage,
+  disabled,
+  selectedModel,
+  onModelChange,
+  placeholder = "Message AI...",
+  onInputChange,
+}: PromptInputProps) {
   const [message, setMessage] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -45,19 +54,23 @@ export default function PromptInput({ onSendMessage, disabled, selectedModel, on
           <div className="relative bg-input border border-border rounded-xl shadow-sm">
             {/* Model Selector inside the chat box */}
             <div className="flex items-center justify-between p-3 border-b border-border">
-              <ModelSelector 
+              <ModelSelector
                 selectedModel={selectedModel}
                 onModelChange={onModelChange}
               />
             </div>
-            
+
             <div className="relative">
               <textarea
                 ref={textareaRef}
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setMessage(value);
+                  onInputChange?.(value);
+                }}
                 onKeyDown={handleKeyDown}
-                placeholder="Message AI..."
+                placeholder={placeholder}
                 disabled={disabled}
                 className="w-full resize-none bg-transparent text-foreground placeholder-muted-foreground px-6 py-6 pr-16 focus:outline-none min-h-[80px] max-h-[300px] text-base leading-relaxed"
                 rows={3}
@@ -67,17 +80,17 @@ export default function PromptInput({ onSendMessage, disabled, selectedModel, on
                 disabled={!message.trim() || disabled}
                 className="absolute right-3 bottom-3 p-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
-                <svg 
-                  className="w-5 h-5" 
-                  fill="none" 
-                  stroke="currentColor" 
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    strokeWidth={2} 
-                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" 
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
                   />
                 </svg>
               </button>
@@ -87,4 +100,4 @@ export default function PromptInput({ onSendMessage, disabled, selectedModel, on
       </div>
     </div>
   );
-} 
+}

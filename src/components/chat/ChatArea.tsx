@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MessageList from "./MessageList";
 import PromptInput from "./PromptInput";
+import { useChat } from "../../contexts/ChatContext";
 
 interface Message {
   id: string;
@@ -12,14 +13,38 @@ interface Message {
 }
 
 interface ChatAreaProps {
-  chatId: string | null;
+  chatId: string;
   selectedModel: string;
   onModelChange: (model: string) => void;
+  initialMessage?: string;
 }
 
-export default function ChatArea({ chatId, selectedModel, onModelChange }: ChatAreaProps) {
+export default function ChatArea({
+  chatId,
+  selectedModel,
+  onModelChange,
+  initialMessage,
+}: ChatAreaProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const { getChat, addMessageToChat } = useChat();
+
+  // Load messages from chat context when chatId changes
+  useEffect(() => {
+    if (chatId) {
+      const chat = getChat(chatId);
+      if (chat) {
+        setMessages(chat.messages);
+      }
+    }
+  }, [chatId, getChat]);
+
+  // Handle initial message when component loads
+  useEffect(() => {
+    if (initialMessage && chatId && messages.length === 0) {
+      handleSendMessage(initialMessage);
+    }
+  }, [initialMessage, chatId]);
 
   const handleSendMessage = async (content: string) => {
     if (!content.trim()) return;
@@ -31,7 +56,10 @@ export default function ChatArea({ chatId, selectedModel, onModelChange }: ChatA
       timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    // Add to local state for immediate UI update
+    setMessages((prev) => [...prev, userMessage]);
+    // Add to chat context for persistence
+    addMessageToChat(chatId, userMessage);
     setIsLoading(true);
 
     // Simulate AI response (replace with actual API call later)
@@ -44,7 +72,8 @@ This response demonstrates the new blog-style layout where AI responses are disp
         role: "assistant",
         timestamp: new Date(),
       };
-      setMessages(prev => [...prev, assistantMessage]);
+      setMessages((prev) => [...prev, assistantMessage]);
+      addMessageToChat(chatId, assistantMessage);
       setIsLoading(false);
     }, 1000);
   };
@@ -53,34 +82,17 @@ This response demonstrates the new blog-style layout where AI responses are disp
     <div className="flex-1 flex flex-col h-full">
       {/* Messages Area */}
       <div className="flex-1 overflow-hidden">
-        {chatId ? (
-          <MessageList 
-            messages={messages}
-            isLoading={isLoading}
-          />
-        ) : (
-          <div className="flex-1 flex items-center justify-center">
-            <div className="text-center">
-              <h3 className="text-lg font-medium text-foreground mb-2">
-                Welcome to byok.chat
-              </h3>
-              <p className="text-muted-foreground">
-                Start a new chat or select an existing one to begin
-              </p>
-            </div>
-          </div>
-        )}
+        <MessageList messages={messages} isLoading={isLoading} />
       </div>
 
       {/* Prompt Input */}
-      {chatId && (
-        <PromptInput 
-          onSendMessage={handleSendMessage}
-          disabled={isLoading}
-          selectedModel={selectedModel}
-          onModelChange={onModelChange}
-        />
-      )}
+      <PromptInput
+        onSendMessage={handleSendMessage}
+        disabled={isLoading}
+        selectedModel={selectedModel}
+        onModelChange={onModelChange}
+        placeholder="Type your message..."
+      />
     </div>
   );
-} 
+}

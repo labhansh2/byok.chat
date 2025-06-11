@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter, usePathname } from "next/navigation";
+import { useChat } from "../../contexts/ChatContext";
 
 interface Chat {
   id: string;
@@ -9,44 +10,38 @@ interface Chat {
   timestamp: Date;
 }
 
-interface SidebarProps {
-  currentChatId: string | null;
-  onChatSelect: (chatId: string) => void;
-}
-
-export default function Sidebar({ currentChatId, onChatSelect }: SidebarProps) {
-  const [chats, setChats] = useState<Chat[]>([
-    {
-      id: "1",
-      title: "Chat about React",
-      lastMessage: "How do I use useState?",
-      timestamp: new Date(),
-    },
-    {
-      id: "2", 
-      title: "AI Discussion",
-      lastMessage: "What are the benefits of...",
-      timestamp: new Date(Date.now() - 3600000),
-    },
-  ]);
+export default function Sidebar() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const { chats } = useChat();
 
   const handleNewChat = () => {
-    const newChatId = `chat-${Date.now()}`;
-    const newChat: Chat = {
-      id: newChatId,
-      title: "New Chat",
-      lastMessage: "",
-      timestamp: new Date(),
-    };
-    setChats([newChat, ...chats]);
-    onChatSelect(newChatId);
+    // Navigate to the base chat route for new chat
+    router.push('/chat');
   };
+
+  const handleChatSelect = (chatId: string) => {
+    // Navigate to the specific chat
+    router.push(`/chat/${chatId}`);
+  };
+
+  // Get current chat ID from the pathname
+  const getCurrentChatId = () => {
+    if (pathname.startsWith('/chat/')) {
+      return pathname.split('/chat/')[1];
+    }
+    return null;
+  };
+
+  const activeChatId = getCurrentChatId();
 
   return (
     <div className="flex flex-col h-full w-full">
       {/* Header */}
       <div className="p-4 border-b border-border">
-        <h1 className="text-lg font-semibold text-foreground mb-4">byok.chat</h1>
+        <h1 className="text-lg font-semibold text-foreground mb-4">
+          byok.chat
+        </h1>
         <button
           onClick={handleNewChat}
           className="w-full bg-primary text-primary-foreground px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90 transition-colors border border-border"
@@ -65,9 +60,9 @@ export default function Sidebar({ currentChatId, onChatSelect }: SidebarProps) {
             {chats.map((chat) => (
               <button
                 key={chat.id}
-                onClick={() => onChatSelect(chat.id)}
+                onClick={() => handleChatSelect(chat.id)}
                 className={`w-full text-left p-3 rounded-md text-sm transition-colors border ${
-                  currentChatId === chat.id
+                  activeChatId === chat.id
                     ? "bg-accent text-accent-foreground border-border"
                     : "hover:bg-accent/50 text-muted-foreground border-transparent"
                 }`}
@@ -90,4 +85,4 @@ export default function Sidebar({ currentChatId, onChatSelect }: SidebarProps) {
       </div>
     </div>
   );
-} 
+}
