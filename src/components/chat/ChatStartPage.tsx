@@ -11,7 +11,7 @@ const SUGGESTED_QUESTIONS = [
   "What are the best practices for React development?",
   "How does machine learning work?",
   "Explain the difference between REST and GraphQL",
-  "Write a creative story about time travel"
+  "Write a creative story about time travel",
 ];
 
 export default function ChatStartPage() {
@@ -23,24 +23,26 @@ export default function ChatStartPage() {
 
   const createNewChat = async (content: string): Promise<string> => {
     const newChatId = `chat-${Date.now()}`;
-    
+
     const newChat = {
       id: newChatId,
-      title: content.slice(0, 50) + (content.length > 50 ? '...' : ''),
+      title: content.slice(0, 50) + (content.length > 50 ? "..." : ""),
       lastMessage: content,
       timestamp: new Date(),
       messages: [],
     };
-    
+
     addChat(newChat);
     return newChatId;
   };
 
   const handleSendMessage = async (content: string) => {
     if (!content.trim()) return;
-    
+
     const newChatId = await createNewChat(content);
-    router.push(`/chat/${newChatId}?initialMessage=${encodeURIComponent(content)}`);
+    router.push(
+      `/chat/${newChatId}?initialMessage=${encodeURIComponent(content)}`,
+    );
   };
 
   const handleSuggestionClick = (suggestion: string) => {
@@ -68,9 +70,11 @@ export default function ChatStartPage() {
                   Welcome to byok.chat
                 </h1>
                 <p className="text-muted-foreground mb-8">
-                  Bring your own keys and chat with any AI model. Start a conversation with one of these suggestions or ask anything you'd like.
+                  Bring your own keys and chat with any AI model. Start a
+                  conversation with one of these suggestions or ask anything
+                  you'd like.
                 </p>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mb-8">
                   {SUGGESTED_QUESTIONS.map((question, index) => (
                     <button
@@ -86,7 +90,7 @@ export default function ChatStartPage() {
                 </div>
               </>
             )}
-            
+
             {isTyping && (
               <div className="text-center mb-8">
                 <h2 className="text-xl font-medium text-foreground mb-2">
@@ -112,4 +116,4 @@ export default function ChatStartPage() {
       />
     </div>
   );
-} 
+}

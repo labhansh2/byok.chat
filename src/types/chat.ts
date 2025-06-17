@@ -1,47 +1,37 @@
-interface Thread {
+export interface Thread {
   id: string;
   title: string;
   createdAt: Date;
   updatedAt: Date;
-  messages: Message[];
 }
 
-interface Message {
+export enum MessageRole {
+  USER = "user",
+  ASSISTANT = "assistant",
+}
+
+export interface Message {
   id: string;
-  role: "user" | "assistant";
+  threadId: string;
+  role: MessageRole;
   createdAt: Date;
   updatedAt: Date;
-  content: Chunk[];
 }
 
-enum ChunkType {
-  Audio = "audio",
-  BulletedListItem = "bulleted_list_item",
-  Callout = "callout",
-  Code = "code",
-  ColumnList = "column_list",
-  Column = "column",
-  Divider = "divider",
-  Equation = "equation",
-  File = "file",
-  Heading1 = "heading_1",
-  Heading2 = "heading_2",
-  Heading3 = "heading_3",
-  Image = "image",
-  LinkPreview = "link_preview",
-  Mention = "mention",
-  NumberedListItem = "numbered_list_item",
-  Paragraph = "paragraph",
-  PDF = "pdf",
-  Quote = "quote",
-  Table = "table",
-  ToDo = "to_do",
-  Toggle = "toggle",
+export enum BlockType {
+  TEXT = "text",
+  IMAGE = "image",
+  AUDIO = "audio",
+  VIDEO = "video",
+  FILE = "file",
 }
 
-interface Chunk {
+export interface Block {
   id: string;
-  type: ChunkType;
+  messageId: string;
+  content: string | null;
+  type: BlockType;
+  metadata: Record<string, any>;
   createdAt: Date;
   updatedAt: Date;
 }
