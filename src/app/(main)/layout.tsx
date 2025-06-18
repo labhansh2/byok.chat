@@ -5,6 +5,8 @@ import "@/app/globals.css";
 import Sidebar from "@/components/sidebar/Sidebar";
 
 import { ChatProvider } from "@/contexts/chat-context";
+import PromptInput from "@/components/chat/PromptInput";
+import ChatArea from "@/components/chat/ChatArea";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,6 +28,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  
   // TODO : implement sidebar toggle
 
   return (
@@ -33,13 +36,9 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-          <div className="flex h-screen w-full">
-            <Sidebar />
-            <main className="flex-1 h-full overflow-hidden">
-              <ChatProvider>  
-                {children}
-              </ChatProvider>
-          </main>
+        <div className="flex h-screen w-full">
+          <Sidebar />
+          <main className="flex-1 h-full overflow-hidden">{children}</main>
         </div>
       </body>
     </html>
