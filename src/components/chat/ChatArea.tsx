@@ -17,16 +17,16 @@ interface MessageWithBlocks extends Message {
 }
 
 export default function ChatArea() {
-  const { 
-    trigger, 
-    rendering, 
-    setRendering, 
-    threadId, 
-    setThreadId, 
+  const {
+    trigger,
+    rendering,
+    setRendering,
+    threadId,
+    setThreadId,
     model,
     messages,
     setMessages,
-    clearMessages 
+    clearMessages,
   } = useChat();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -77,19 +77,19 @@ export default function ChatArea() {
 
   const loadMessages = async () => {
     if (!threadId) return;
-    
+
     setIsLoading(true);
     try {
       const threadMessages = getMessages(threadId);
       console.log("Loaded thread messages:", threadMessages);
-      
+
       const messagesWithBlocks = await Promise.all(
         threadMessages.map(async (message) => ({
           ...message,
           blocks: getBlocks(message.id),
-        }))
+        })),
       );
-      
+
       console.log("Messages with blocks:", messagesWithBlocks);
       setMessages(messagesWithBlocks);
     } catch (error) {
@@ -125,23 +125,27 @@ export default function ChatArea() {
             {message.role === MessageRole.USER ? (
               <UserMessage message={message} />
             ) : (
-              <AssistantMessage 
+              <AssistantMessage
                 message={message}
                 isStreaming={rendering}
-                isLatestMessage={message.id === messages[messages.length - 1]?.id}
+                isLatestMessage={
+                  message.id === messages[messages.length - 1]?.id
+                }
               />
             )}
           </div>
         ))}
 
         {/* Show typing indicator when rendering new message */}
-        {rendering && messages.length > 0 && messages[messages.length - 1]?.role === MessageRole.USER && (
-          <div className="flex justify-center">
-            <div className="w-full max-w-3xl px-4">
-              <TypingIndicator />
+        {rendering &&
+          messages.length > 0 &&
+          messages[messages.length - 1]?.role === MessageRole.USER && (
+            <div className="flex justify-center">
+              <div className="w-full max-w-3xl px-4">
+                <TypingIndicator />
+              </div>
             </div>
-          </div>
-        )}
+          )}
       </div>
     </div>
   );

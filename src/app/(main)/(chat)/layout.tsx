@@ -1,6 +1,6 @@
 import ChatArea from "@/components/chat/ChatArea";
 
-import { ChatProvider } from "@/contexts/chat-context";
+// import { ChatProvider } from "@/contexts/chat-context";
 import PromptInput from "@/components/chat/PromptInput";
 
 export default function ChatLayout({
@@ -9,12 +9,12 @@ export default function ChatLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ChatProvider>
+    <>
       <div className="flex flex-col h-full w-full">
         <ChatArea />
         <PromptInput />
       </div>
       {children}
-    </ChatProvider>
+    </>
   );
 }

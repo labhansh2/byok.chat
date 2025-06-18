@@ -28,7 +28,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  
   // TODO : implement sidebar toggle
 
   return (
@@ -37,8 +36,10 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <div className="flex h-screen w-full">
-          <Sidebar />
-          <main className="flex-1 h-full overflow-hidden">{children}</main>
+          <ChatProvider>
+            <Sidebar />
+            <main className="flex-1 h-full overflow-hidden">{children}</main>
+          </ChatProvider>
         </div>
       </body>
     </html>

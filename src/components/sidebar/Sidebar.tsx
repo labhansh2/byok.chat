@@ -30,7 +30,7 @@ export default function Sidebar() {
       setIsLoading(false);
     }
   };
-  
+
   // TODO : this is a hack change it to a better solution
   useEffect(() => {
     // Only reload threads if navigating from "/" to a "/chat/..." route

@@ -6,4 +6,4 @@ export default function TypingIndicator() {
       <div className="w-2 h-2 bg-muted-foreground/50 rounded-full animate-pulse delay-150"></div>
     </div>
   );
-} 
+}

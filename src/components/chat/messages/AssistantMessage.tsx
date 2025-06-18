@@ -10,15 +10,15 @@ interface AssistantMessageProps {
   isLatestMessage?: boolean;
 }
 
-export default function AssistantMessage({ 
-  message, 
-  isStreaming = false, 
-  isLatestMessage = false 
+export default function AssistantMessage({
+  message,
+  isStreaming = false,
+  isLatestMessage = false,
 }: AssistantMessageProps) {
   const [copiedMessageId, setCopiedMessageId] = useState<string | null>(null);
 
   const copyToClipboard = async () => {
-    const content = message.blocks.map(block => block.content).join('\n\n');
+    const content = message.blocks.map((block) => block.content).join("\n\n");
     try {
       await navigator.clipboard.writeText(content);
       setCopiedMessageId(message.id);
@@ -33,17 +33,20 @@ export default function AssistantMessage({
       <div className="w-full max-w-3xl">
         <div className="px-4 py-4">
           {message.blocks.map((block, index) => (
-            <div key={block.id} className={`${index > 0 ? "mt-4" : ""} text-foreground leading-relaxed`}>
-              <p className="mb-4 text-base leading-7 whitespace-pre-wrap">{block.content}</p>
+            <div
+              key={block.id}
+              className={`${index > 0 ? "mt-4" : ""} text-foreground leading-relaxed`}
+            >
+              <p className="mb-4 text-base leading-7 whitespace-pre-wrap">
+                {block.content}
+              </p>
             </div>
           ))}
-          
+
           {/* Show typing indicator for assistant when streaming */}
-          {isStreaming && isLatestMessage && (
-            <TypingIndicator />
-          )}
+          {isStreaming && isLatestMessage && <TypingIndicator />}
         </div>
-        
+
         {/* Copy Button - only show if not currently streaming this message */}
         {!(isStreaming && isLatestMessage) && (
           <div className="flex justify-end px-4 pb-2">
@@ -68,4 +71,4 @@ export default function AssistantMessage({
       </div>
     </div>
   );
-} 
+}

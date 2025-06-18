@@ -9,7 +9,12 @@ import {
   Sparkles,
   Key,
 } from "lucide-react";
-import { hasApiKey, setApiKey, removeApiKey, validateApiKey } from "@/lib/api-key-utils";
+import {
+  hasApiKey,
+  setApiKey,
+  removeApiKey,
+  validateApiKey,
+} from "@/lib/api-key-utils";
 
 interface ChatAreaProps {
   chatId?: string;
@@ -32,11 +37,13 @@ export default function ChatAreaPlaceholder() {
 
     setIsSubmitting(true);
     setError("");
-    
+
     try {
       // Validate the API key format
       if (!validateApiKey(apiKeyInput)) {
-        setError("Invalid API key format. OpenRouter keys should start with 'sk-or-v1-'");
+        setError(
+          "Invalid API key format. OpenRouter keys should start with 'sk-or-v1-'",
+        );
         return;
       }
 
@@ -87,16 +94,16 @@ export default function ChatAreaPlaceholder() {
       <div className="max-w-4xl mx-auto flex items-center justify-center h-full">
         <div className="text-center text-muted-foreground">
           <h1 className="text-2xl font-semibold mb-4">Welcome to BYOK Chat</h1>
-          
+
           {!hasStoredKey ? (
             <div className="space-y-6">
               <div className="flex items-center justify-center gap-2 text-muted-foreground/80">
                 <Key className="w-4 h-4" />
                 <p className="text-sm">
                   To start chatting, add your{" "}
-                  <a 
-                    href="https://openrouter.ai/" 
-                    target="_blank" 
+                  <a
+                    href="https://openrouter.ai/"
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="underline hover:no-underline"
                   >
@@ -104,7 +111,7 @@ export default function ChatAreaPlaceholder() {
                   </a>
                 </p>
               </div>
-              
+
               <div className="border border-border/50 rounded-lg p-4 max-w-lg mx-auto">
                 <form onSubmit={handleApiKeySubmit} className="space-y-3">
                   <div className="flex gap-2">
@@ -124,11 +131,9 @@ export default function ChatAreaPlaceholder() {
                       {isSubmitting ? "..." : "Save"}
                     </button>
                   </div>
-                  {error && (
-                    <p className="text-red-500 text-xs">{error}</p>
-                  )}
+                  {error && <p className="text-red-500 text-xs">{error}</p>}
                 </form>
-                
+
                 <p className="text-xs text-muted-foreground/60 mt-3 text-center">
                   Stored locally in your browser
                 </p>
@@ -136,9 +141,11 @@ export default function ChatAreaPlaceholder() {
             </div>
           ) : (
             <div className="space-y-4">
-              <p className="text-lg mb-2">Start a conversation with any AI model</p>
+              <p className="text-lg mb-2">
+                Start a conversation with any AI model
+              </p>
               <p className="text-sm mb-4">Type your message below to begin</p>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8 max-w-2xl mx-auto">
                 {suggestions.map((suggestion, index) => (
                   <div
@@ -147,13 +154,15 @@ export default function ChatAreaPlaceholder() {
                   >
                     <div className="flex items-center gap-3 mb-2">
                       {suggestion.icon}
-                      <span className="font-medium text-foreground">{suggestion.title}</span>
+                      <span className="font-medium text-foreground">
+                        {suggestion.title}
+                      </span>
                     </div>
                     <p className="text-sm">{suggestion.description}</p>
                   </div>
                 ))}
               </div>
-              
+
               <button
                 onClick={handleClearKey}
                 className="mt-6 text-xs text-muted-foreground hover:text-foreground underline"

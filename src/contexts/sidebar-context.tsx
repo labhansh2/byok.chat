@@ -4,8 +4,6 @@ import { createContext, useContext, useState } from "react";
 const SidebarContext = createContext({
   tab: "recent",
   setTab: (tab: "recent" | "files" | "extensions") => {},
-  activeThread: "",
-  setActiveThread: (thread: string) => {},
   refreshThreads: () => {},
 });
 
@@ -17,16 +15,13 @@ export const SidebarProvider = ({
   refreshThreads?: () => void;
 }) => {
   const [tab, setTab] = useState<"recent" | "files" | "extensions">("recent");
-  const [activeThread, setActiveThread] = useState<string>("");
 
   return (
     <SidebarContext.Provider
-      value={{ 
-        tab, 
-        setTab, 
-        activeThread, 
-        setActiveThread, 
-        refreshThreads: refreshThreads || (() => {})
+      value={{
+        tab,
+        setTab,
+        refreshThreads: refreshThreads || (() => {}),
       }}
     >
       {children}

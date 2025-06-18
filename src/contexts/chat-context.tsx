@@ -1,6 +1,12 @@
 "use client";
 
-import { createContext, useContext, useState, Dispatch, SetStateAction } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  Dispatch,
+  SetStateAction,
+} from "react";
 import { Message, Block } from "@/types/chat";
 
 interface MessageWithBlocks extends Message {
@@ -45,12 +51,12 @@ export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
   // shared states for chat area
   const [rendering, setRendering] = useState<boolean>(false);
   const [trigger, setTrigger] = useState<number>(1);
-  
+
   // message state
   const [messages, setMessages] = useState<MessageWithBlocks[]>([]);
 
   const addMessage = (message: MessageWithBlocks) => {
-    setMessages(prev => [...prev, message]);
+    setMessages((prev) => [...prev, message]);
   };
 
   const clearMessages = () => {

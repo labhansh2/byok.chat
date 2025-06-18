@@ -13,8 +13,17 @@ import { useSidebar } from "@/contexts/sidebar-context";
 import { usePathname } from "next/navigation";
 
 export default function PromptInput() {
-  const { trigger, setTrigger, rendering, setRendering, model, setModel, addMessage, setThreadId } =
-    useChat();
+  const {
+    trigger,
+    setTrigger,
+    rendering,
+    setRendering,
+    model,
+    setModel,
+    addMessage,
+    setThreadId,
+  } = useChat();
+
   const { refreshThreads } = useSidebar();
   const [message, setMessage] = useState("");
 
@@ -31,19 +40,19 @@ export default function PromptInput() {
 
   useEffect(() => {
     setHasStoredApiKey(hasApiKey());
-    
+
     // Listen for storage events to update when API key is added/removed
     const handleStorageChange = () => {
       setHasStoredApiKey(hasApiKey());
     };
-    
-    window.addEventListener('storage', handleStorageChange);
+
+    window.addEventListener("storage", handleStorageChange);
     // Also listen for custom events within the same tab
-    window.addEventListener('localStorageUpdate', handleStorageChange);
-    
+    window.addEventListener("localStorageUpdate", handleStorageChange);
+
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
-      window.removeEventListener('localStorageUpdate', handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("localStorageUpdate", handleStorageChange);
     };
   }, []);
 
@@ -58,7 +67,10 @@ export default function PromptInput() {
   // Update blocks in real-time as user types
   useEffect(() => {
     if (message.trim()) {
-      const paragraphs = message.split('\n').map(p => p.trim()).filter(p => p.length > 0);
+      const paragraphs = message
+        .split("\n")
+        .map((p) => p.trim())
+        .filter((p) => p.length > 0);
       setRealtimeBlocks(paragraphs);
       console.log("Real-time blocks updated:", paragraphs);
     } else {
@@ -68,9 +80,9 @@ export default function PromptInput() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!message.trim()) return;
-    
+
     // Check if API key exists before proceeding
     if (!hasStoredApiKey) {
       alert("Please add your OpenRouter API key first to start chatting.");
@@ -84,8 +96,10 @@ export default function PromptInput() {
       // Create new thread with all blocks
       try {
         // Generate title from first block
-        const title = blocksToSubmit[0].substring(0, 50) + (blocksToSubmit[0].length > 50 ? "..." : "");
-        
+        const title =
+          blocksToSubmit[0].substring(0, 50) +
+          (blocksToSubmit[0].length > 50 ? "..." : "");
+
         // Create thread
         const thread = createThread(title);
         console.log("Created thread:", thread);
@@ -95,8 +109,8 @@ export default function PromptInput() {
         console.log("Created message:", userMessage);
 
         // Create blocks for each paragraph
-        const createdBlocks = blocksToSubmit.map(blockContent => 
-          createBlock(userMessage.id, blockContent)
+        const createdBlocks = blocksToSubmit.map((blockContent) =>
+          createBlock(userMessage.id, blockContent),
         );
         console.log("Created blocks:", createdBlocks);
 
@@ -105,8 +119,11 @@ export default function PromptInput() {
           ...userMessage,
           blocks: createdBlocks,
         };
-        
-        console.log("Adding user message to state (new thread):", messageWithBlocks);
+
+        console.log(
+          "Adding user message to state (new thread):",
+          messageWithBlocks,
+        );
         addMessage(messageWithBlocks);
 
         // Set thread ID immediately (before navigation)
@@ -134,7 +151,7 @@ export default function PromptInput() {
       }
     } else {
       // Handle existing thread - extract thread ID from pathname
-      const threadId = pathname.split('/')[2];
+      const threadId = pathname.split("/")[2];
       if (threadId) {
         try {
           // Create user message for existing thread
@@ -142,8 +159,8 @@ export default function PromptInput() {
           console.log("Created message for existing thread:", userMessage);
 
           // Create blocks for each paragraph
-          const createdBlocks = blocksToSubmit.map(blockContent => 
-            createBlock(userMessage.id, blockContent)
+          const createdBlocks = blocksToSubmit.map((blockContent) =>
+            createBlock(userMessage.id, blockContent),
           );
           console.log("Created blocks:", createdBlocks);
 
@@ -152,8 +169,11 @@ export default function PromptInput() {
             ...userMessage,
             blocks: createdBlocks,
           };
-          
-          console.log("Adding user message to state (existing thread):", messageWithBlocks);
+
+          console.log(
+            "Adding user message to state (existing thread):",
+            messageWithBlocks,
+          );
           addMessage(messageWithBlocks);
 
           // Reset states
@@ -258,7 +278,7 @@ export default function PromptInput() {
               className="w-full min-h-[60px] max-h-48 px-4 py-4 resize-none focus:outline-none bg-transparent overflow-hidden"
               rows={1}
             />
-            
+
             {/* Controls Row */}
             <div className="flex items-center justify-between px-4 pb-3">
               {/* Model Selector Button */}
@@ -276,7 +296,11 @@ export default function PromptInput() {
                 type="submit"
                 disabled={!message.trim() || rendering || !hasStoredApiKey}
                 className="p-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-                title={!hasStoredApiKey ? "Add your OpenRouter API key first" : "Send message"}
+                title={
+                  !hasStoredApiKey
+                    ? "Add your OpenRouter API key first"
+                    : "Send message"
+                }
               >
                 <Send className="w-4 h-4" />
               </button>

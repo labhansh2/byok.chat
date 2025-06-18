@@ -149,7 +149,10 @@ export function getMessages(threadId: string) {
   return messages.filter((message) => message.threadId === threadId);
 }
 
-export function createMessage(threadId: string, role: MessageRole = MessageRole.USER) {
+export function createMessage(
+  threadId: string,
+  role: MessageRole = MessageRole.USER,
+) {
   const newMessage: Message = {
     id: uuidv4(),
     threadId,
