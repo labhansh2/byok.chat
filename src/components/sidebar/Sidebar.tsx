@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import Nav from "./Nav";
 import History from "./history/History";
 import Extensions from "./extensions/Extensions";
+import AuthSection from "./AuthSection";
 
 import { SidebarProvider } from "@/contexts/sidebar-context";
 import ContentArea from "./ContentArea";
@@ -67,10 +68,17 @@ export default function Sidebar() {
           </Link>
         </div>
       </div>
-      <SidebarProvider refreshThreads={loadThreads}>
-        <Nav />
-        <ContentArea threads={threads} />
-      </SidebarProvider>
+      
+      {/* Content Area - flex-1 to take remaining space */}
+      <div className="flex-1 flex flex-col">
+        <SidebarProvider refreshThreads={loadThreads}>
+          <Nav />
+          <ContentArea threads={threads} />
+        </SidebarProvider>
+      </div>
+      
+      {/* Auth Section at the bottom */}
+      <AuthSection />
     </div>
   );
 }

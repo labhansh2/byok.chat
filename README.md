@@ -9,7 +9,7 @@ An AI Chat Application that lets you add LLM Pro
 - [x] Prompt Input
 - [x] OpenRouter
 - [x] Better Model Selector
-- [ ] Auth
+- [x] Auth
 - [ ] DB
 - [ ] peacock renderer
 - [ ] extensions

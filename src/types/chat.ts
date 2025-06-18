@@ -15,17 +15,19 @@ export interface Message {
   id: string;
   threadId: string;
   role: MessageRole;
-  // model: string;
+  // model: string; // Add this while implementing the database 
   createdAt: Date;
   updatedAt: Date;
 }
 
 export enum BlockType {
   TEXT = "text",
-  IMAGE = "image",
-  AUDIO = "audio",
-  VIDEO = "video",
-  FILE = "file",
+  CODE = "code",
+  // don't add this fields yet, not even in the database
+  // IMAGE = "image",
+  // AUDIO = "audio",
+  // VIDEO = "video",
+  // FILE = "file",
 }
 
 export interface Block {
