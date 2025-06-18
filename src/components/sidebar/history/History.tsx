@@ -4,7 +4,7 @@ import ThreadTiles from "./ThreadTiles";
 import ThreadTilesSkeleton from "./ThreadTilesSkeleton";
 import { Thread } from "@/types/chat";
 
-export default function History({ threads }: { threads: Promise<Thread[]> }) {
+export default function History({ threads }: { threads: Thread[] }) {
   return (
     <div className="flex-1 overflow-y-auto">
       <div className="p-2">

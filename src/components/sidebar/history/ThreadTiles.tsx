@@ -8,9 +8,9 @@ import { useSidebar } from "@/contexts/sidebar-context";
 export default function ThreadTiles({
   threads,
 }: {
-  threads: Promise<Thread[]>;
+  threads: Thread[];
 }) {
-  const threadsList = use(threads);
+  const threadsList = threads;
   const router = useRouter();
   const { activeThread, setActiveThread } = useSidebar();
 

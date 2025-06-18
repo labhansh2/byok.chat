@@ -6,13 +6,16 @@ import { useRouter } from "next/navigation";
 
 import ModelSelector from "@/components/chat/ModelSelector";
 import { createThread, createMessage, createBlock } from "@/lib/server";
+import { hasApiKey } from "@/lib/api-key-utils";
 
 import { useChat } from "@/contexts/chat-context";
+import { useSidebar } from "@/contexts/sidebar-context";
 import { usePathname } from "next/navigation";
 
 export default function PromptInput() {
-  const { trigger, setTrigger, rendering, setRendering, model, setModel } =
+  const { trigger, setTrigger, rendering, setRendering, model, setModel, addMessage, setThreadId } =
     useChat();
+  const { refreshThreads } = useSidebar();
   const [message, setMessage] = useState("");
 
   // input states
@@ -22,6 +25,27 @@ export default function PromptInput() {
 
   // Real-time blocks tracking (behind the scenes)
   const [realtimeBlocks, setRealtimeBlocks] = useState<string[]>([]);
+
+  // Check if API key exists
+  const [hasStoredApiKey, setHasStoredApiKey] = useState(false);
+
+  useEffect(() => {
+    setHasStoredApiKey(hasApiKey());
+    
+    // Listen for storage events to update when API key is added/removed
+    const handleStorageChange = () => {
+      setHasStoredApiKey(hasApiKey());
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    // Also listen for custom events within the same tab
+    window.addEventListener('localStorageUpdate', handleStorageChange);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('localStorageUpdate', handleStorageChange);
+    };
+  }, []);
 
   const pathname = usePathname();
   const router = useRouter();
@@ -46,6 +70,12 @@ export default function PromptInput() {
     e.preventDefault();
     
     if (!message.trim()) return;
+    
+    // Check if API key exists before proceeding
+    if (!hasStoredApiKey) {
+      alert("Please add your OpenRouter API key first to start chatting.");
+      return;
+    }
 
     // Use the real-time blocks that were already created
     const blocksToSubmit = realtimeBlocks;
@@ -70,6 +100,33 @@ export default function PromptInput() {
         );
         console.log("Created blocks:", createdBlocks);
 
+        // Add user message to shared state immediately
+        const messageWithBlocks = {
+          ...userMessage,
+          blocks: createdBlocks,
+        };
+        
+        console.log("Adding user message to state (new thread):", messageWithBlocks);
+        addMessage(messageWithBlocks);
+
+        // Set thread ID immediately (before navigation)
+        setThreadId(thread.id);
+
+        // Reset states before navigation
+        setMessage("");
+        setRealtimeBlocks([]);
+        if (textareaRef.current) {
+          textareaRef.current.style.height = "auto";
+        }
+
+        // Set rendering state and trigger AFTER setting thread ID
+        setRendering(true);
+        setTrigger(trigger + 1); // Use consistent increment
+        console.log("Set rendering to true, trigger:", trigger + 1);
+
+        // Refresh sidebar to show new thread
+        refreshThreads();
+
         // Route to the new thread
         router.push(`/chat/${thread.id}`);
       } catch (error) {
@@ -89,27 +146,41 @@ export default function PromptInput() {
             createBlock(userMessage.id, blockContent)
           );
           console.log("Created blocks:", createdBlocks);
+
+          // Add user message to shared state immediately
+          const messageWithBlocks = {
+            ...userMessage,
+            blocks: createdBlocks,
+          };
+          
+          console.log("Adding user message to state (existing thread):", messageWithBlocks);
+          addMessage(messageWithBlocks);
+
+          // Reset states
+          setMessage("");
+          setRealtimeBlocks([]);
+          if (textareaRef.current) {
+            textareaRef.current.style.height = "auto";
+          }
+
+          setRendering(true);
+          setTrigger(trigger + 1);
+          console.log("Set rendering to true, trigger:", trigger + 1);
         } catch (error) {
           console.error("Error creating message:", error);
         }
       }
     }
-
-    // Reset states
-    setMessage("");
-    setRealtimeBlocks([]);
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-    }
-
-    setRendering(true);
-    setTrigger(Math.random() > 0.5 ? trigger + 1 : trigger - 1);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      handleSubmit(e);
+      if (hasStoredApiKey) {
+        handleSubmit(e);
+      } else {
+        alert("Please add your OpenRouter API key first to start chatting.");
+      }
     }
     // Shift+Enter will naturally create new lines - blocks will be updated via useEffect
   };
@@ -203,8 +274,9 @@ export default function PromptInput() {
               {/* Send Button */}
               <button
                 type="submit"
-                disabled={!message.trim()}
+                disabled={!message.trim() || rendering || !hasStoredApiKey}
                 className="p-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                title={!hasStoredApiKey ? "Add your OpenRouter API key first" : "Send message"}
               >
                 <Send className="w-4 h-4" />
               </button>

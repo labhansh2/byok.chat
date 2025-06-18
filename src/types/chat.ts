@@ -15,6 +15,7 @@ export interface Message {
   id: string;
   threadId: string;
   role: MessageRole;
+  // model: string;
   createdAt: Date;
   updatedAt: Date;
 }

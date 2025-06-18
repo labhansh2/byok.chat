@@ -9,7 +9,7 @@ import History from "./history/History";
 export default function ContentArea({
   threads,
 }: {
-  threads: Promise<Thread[]>;
+  threads: Thread[];
 }) {
   const { tab } = useSidebar();
 

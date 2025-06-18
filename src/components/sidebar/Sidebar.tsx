@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
 import Nav from "./Nav";
 import History from "./history/History";
@@ -7,9 +10,40 @@ import Extensions from "./extensions/Extensions";
 import { SidebarProvider } from "@/contexts/sidebar-context";
 import ContentArea from "./ContentArea";
 import { getThreads } from "@/lib/server";
+import { Thread } from "@/types/chat";
+import { usePathname, useRouter } from "next/navigation";
 
-export default async function Sidebar() {
-  const threads = getThreads();
+export default function Sidebar() {
+  const [threads, setThreads] = useState<Thread[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const loadThreads = async () => {
+    try {
+      const threadData = await getThreads();
+      setThreads(threadData);
+    } catch (error) {
+      console.error("Error loading threads:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  // TODO : this is a hack change it to a better solution
+  useEffect(() => {
+    // Only reload threads if navigating from "/" to a "/chat/..." route
+    if (pathname && pathname.startsWith("/chat/")) {
+      loadThreads();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
+
+  useEffect(() => {
+    loadThreads();
+  }, []);
+
   return (
     <div className="flex flex-col h-full w-[256px] border-r border-border">
       {/* Header */}
@@ -33,7 +67,7 @@ export default async function Sidebar() {
           </Link>
         </div>
       </div>
-      <SidebarProvider>
+      <SidebarProvider refreshThreads={loadThreads}>
         <Nav />
         <ContentArea threads={threads} />
       </SidebarProvider>
