@@ -3,6 +3,7 @@ export interface Thread {
   title: string;
   createdAt: Date;
   updatedAt: Date;
+  model: string;
 }
 
 export enum MessageRole {

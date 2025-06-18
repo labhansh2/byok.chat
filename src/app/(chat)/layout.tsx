@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import { cookies } from "next/headers";
 
 import "@/app/globals.css";
 import Sidebar from "@/components/sidebar/Sidebar";
+
+import { ChatProvider } from "@/contexts/chat-context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,9 +33,13 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <div className="flex h-screen w-full">
-          <Sidebar />
-          <main className="flex-1 h-full overflow-hidden">{children}</main>
+          <div className="flex h-screen w-full">
+            <Sidebar />
+            <main className="flex-1 h-full overflow-hidden">
+              <ChatProvider>  
+                {children}
+              </ChatProvider>
+          </main>
         </div>
       </body>
     </html>

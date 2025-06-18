@@ -3,18 +3,19 @@
 import { Thread } from "@/types/chat";
 import { useRouter } from "next/navigation";
 import { use, useState } from "react";
+import { useSidebar } from "@/contexts/sidebar-context";
 
-export default function ThreadTile({
+export default function ThreadTiles({
   threads,
 }: {
   threads: Promise<Thread[]>;
 }) {
   const threadsList = use(threads);
   const router = useRouter();
-  const [active, setActive] = useState<string | null>(null);
+  const { activeThread, setActiveThread} = useSidebar();
 
   const handleClick = (id: string) => {
-    setActive(id);
+    setActiveThread(id);
     router.push(`/chat/${id}`);
   };
 
@@ -25,7 +26,7 @@ export default function ThreadTile({
           key={thread.id}
           onClick={() => handleClick(thread.id)}
           className={`w-full text-left p-2 rounded-md text-sm transition-colors border ${
-            active === thread.id
+            activeThread === thread.id
               ? "bg-accent text-accent-foreground border-border"
               : "hover:bg-accent/50 text-muted-foreground border-transparent"
           }`}

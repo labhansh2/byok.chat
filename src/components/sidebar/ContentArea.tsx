@@ -1,6 +1,6 @@
 "use client";
 
-import { useSidebar } from "@/contexts/SidebarContext";
+import { useSidebar } from "@/contexts/sidebar-context";
 import { Thread } from "@/types/chat";
 
 import Extensions from "./extensions/Extensions";

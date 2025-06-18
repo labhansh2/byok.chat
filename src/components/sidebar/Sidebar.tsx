@@ -4,14 +4,14 @@ import Nav from "./Nav";
 import History from "./history/History";
 import Extensions from "./extensions/Extensions";
 
-import { SidebarProvider } from "@/contexts/SidebarContext";
+import { SidebarProvider } from "@/contexts/sidebar-context";
 import ContentArea from "./ContentArea";
 import { getThreads } from "@/lib/server";
 
 export default async function Sidebar() {
   const threads = getThreads();
   return (
-    <div className="flex flex-col h-full w-[280px] border-r border-border">
+    <div className="flex flex-col h-full w-[256px] border-r border-border">
       {/* Header */}
       <div className="p-4 border-b border-border">
         <div className="flex items-center justify-between mb-4">
@@ -36,8 +36,6 @@ export default async function Sidebar() {
       <SidebarProvider>
         <Nav />
         <ContentArea threads={threads} />
-        {/* <History />
-        <Extensions /> */}
       </SidebarProvider>
     </div>
   );

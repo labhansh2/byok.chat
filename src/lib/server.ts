@@ -8,18 +8,21 @@ export const threads: Thread[] = [
     title: "Project Discussion",
     createdAt: new Date("2024-03-01T10:00:00Z"),
     updatedAt: new Date("2024-03-01T11:30:00Z"),
+    model: "GPT-4",
   },
   {
     id: "thread-2",
     title: "Code Review",
     createdAt: new Date("2024-03-02T14:00:00Z"),
     updatedAt: new Date("2024-03-02T15:45:00Z"),
+    model: "GPT-4",
   },
   {
     id: "thread-3",
     title: "Bug Investigation",
     createdAt: new Date("2024-03-03T09:00:00Z"),
     updatedAt: new Date("2024-03-03T10:15:00Z"),
+    model: "claude-3-5-sonnet",
   },
 ];
 
@@ -118,7 +121,15 @@ export function getThreads(): Promise<Thread[]> {
   return new Promise((resolve) => {
     setTimeout(() => {
       resolve(threads);
-    }, 0);
+    }, 200);
+  });
+}
+
+export function getThreadById(id: string): Promise<Thread | undefined> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(threads.find((thread) => thread.id === id));
+    }, 200);
   });
 }
 
@@ -128,6 +139,7 @@ export function createThread(title: string) {
     title,
     createdAt: new Date(),
     updatedAt: new Date(),
+    model: "GPT-4",
   };
   threads.push(newThread);
   return newThread;
@@ -165,4 +177,18 @@ export function createBlock(messageId: string, content: string) {
   };
   blocks.push(newBlock);
   return newBlock;
+}
+
+let userdefaultModel = "GPT-4";
+
+export async function getUserMetadata() {
+  return {
+    name: "John Doe",
+    email: "john.doe@example.com",
+    defaultModel: userdefaultModel
+  };
+}
+
+export async function setUserDefaultModel(model: string) {
+  userdefaultModel = model;
 }

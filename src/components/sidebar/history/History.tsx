@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 
-import ThreadTile from "./ThreadTile";
+import ThreadTiles from "./ThreadTiles";
+import ThreadTilesSkeleton from "./ThreadTilesSkeleton";
 import { Thread } from "@/types/chat";
 
 export default function History({ threads }: { threads: Promise<Thread[]> }) {
@@ -12,9 +13,9 @@ export default function History({ threads }: { threads: Promise<Thread[]> }) {
             Recent Chats
           </h2>
         </div>
-        <Suspense fallback={<div>Loading...</div>}>
-          <ThreadTile threads={threads} />
-        </Suspense>
+        {/* <Suspense fallback={<ThreadTilesSkeleton />}> */}
+          <ThreadTiles threads={threads} />
+        {/* </Suspense> */}
       </div>
     </div>
   );

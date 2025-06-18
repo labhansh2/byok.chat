@@ -1,7 +1,7 @@
 "use client";
 
 import { Clock, FileText, Layers } from "lucide-react";
-import { useSidebar } from "@/contexts/SidebarContext";
+import { useSidebar } from "@/contexts/sidebar-context";
 
 export default function Nav() {
   const { tab, setTab } = useSidebar();

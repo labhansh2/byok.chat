@@ -1,11 +1,12 @@
 "use client";
 import { createContext, useContext, useState } from "react";
 
+
 const SidebarContext = createContext({
   tab: "recent",
   setTab: (tab: "recent" | "files" | "extensions") => {},
-  // isOpen: false,
-  // setIsOpen: (isOpen: boolean) => {},
+  activeThread: "",
+  setActiveThread: (thread: string) => {}
 });
 
 export const SidebarProvider = ({
@@ -14,10 +15,10 @@ export const SidebarProvider = ({
   children: React.ReactNode;
 }) => {
   const [tab, setTab] = useState<"recent" | "files" | "extensions">("recent");
-  // const [isOpen, setIsOpen] = useState(false);
+  const [activeThread, setActiveThread] = useState<string>("");
 
   return (
-    <SidebarContext.Provider value={{ tab, setTab }}>
+    <SidebarContext.Provider value={{ tab, setTab, activeThread, setActiveThread }}>
       {children}
     </SidebarContext.Provider>
   );
