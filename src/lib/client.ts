@@ -1,5 +1,3 @@
-"use client";
-
 import { v4 as uuidv4 } from "uuid";
 
 import { Thread, Message, Block, BlockType, MessageRole } from "@/types/chat";
@@ -10,18 +8,21 @@ export const threads: Thread[] = [
     title: "Project Discussion",
     createdAt: new Date("2024-03-01T10:00:00Z"),
     updatedAt: new Date("2024-03-01T11:30:00Z"),
+    model: "GPT-4",
   },
   {
     id: "thread-2",
     title: "Code Review",
     createdAt: new Date("2024-03-02T14:00:00Z"),
     updatedAt: new Date("2024-03-02T15:45:00Z"),
+    model: "GPT-4",
   },
   {
     id: "thread-3",
     title: "Bug Investigation",
     createdAt: new Date("2024-03-03T09:00:00Z"),
     updatedAt: new Date("2024-03-03T10:15:00Z"),
+    model: "claude-3-5-sonnet",
   },
 ];
 
@@ -116,26 +117,39 @@ export const blocks: Block[] = [
   },
 ];
 
-export function getThreads() {
-  return threads;
+export function getThreadsClient(): Promise<Thread[]> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(threads);
+    }, 200);
+  });
 }
 
-export function createThread(title: string) {
+export function getThreadByIdClient(id: string): Promise<Thread | undefined> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(threads.find((thread) => thread.id === id));
+    }, 200);
+  });
+}
+
+export function createThreadClient(title: string) {
   const newThread: Thread = {
     id: uuidv4(),
     title,
     createdAt: new Date(),
     updatedAt: new Date(),
+    model: "GPT-4",
   };
   threads.push(newThread);
   return newThread;
 }
 
-export function getMessages(threadId: string) {
+export function getMessagesClient(threadId: string) {
   return messages.filter((message) => message.threadId === threadId);
 }
 
-export function createMessage(threadId: string) {
+export function createMessageClient(threadId: string) {
   const newMessage: Message = {
     id: uuidv4(),
     threadId,
@@ -147,11 +161,11 @@ export function createMessage(threadId: string) {
   return newMessage;
 }
 
-export function getBlocks(messageId: string) {
+export function getBlocksClient(messageId: string) {
   return blocks.filter((block) => block.messageId === messageId);
 }
 
-export function createBlock(messageId: string, content: string) {
+export function createBlockClient(messageId: string, content: string) {
   const newBlock: Block = {
     id: uuidv4(),
     messageId,
@@ -163,4 +177,22 @@ export function createBlock(messageId: string, content: string) {
   };
   blocks.push(newBlock);
   return newBlock;
+}
+
+let userdefaultModel = "GPT-4";
+
+export async function getUserMetadataClient() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        name: "John Doe",
+        email: "john.doe@example.com",
+        defaultModel: userdefaultModel,
+      });
+    }, 200);
+  });
+}
+
+export async function setUserDefaultModelClient(model: string) {
+  userdefaultModel = model;
 }

@@ -36,7 +36,7 @@ export default function ModelSelector({
       const filtered = SAMPLE_MODELS.filter(
         (model) =>
           model.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          model.provider.toLowerCase().includes(searchQuery.toLowerCase())
+          model.provider.toLowerCase().includes(searchQuery.toLowerCase()),
       );
       setFilteredModels(filtered);
     }
@@ -49,7 +49,7 @@ export default function ModelSelector({
     }
   }, [focusOnOpen]);
 
-  const handleModelSelect = (model: typeof SAMPLE_MODELS[0]) => {
+  const handleModelSelect = (model: (typeof SAMPLE_MODELS)[0]) => {
     onSelectModel(model.name);
   };
 
@@ -124,10 +124,11 @@ export default function ModelSelector({
       {/* Footer */}
       <div className="p-4 border-t border-border bg-muted/5">
         <p className="text-xs text-muted-foreground">
-          Tip: Type <code className="px-1 py-0.5 bg-muted rounded">#model:</code>{" "}
-          in the chat to quickly open this selector
+          Tip: Type{" "}
+          <code className="px-1 py-0.5 bg-muted rounded">#model:</code> in the
+          chat to quickly open this selector
         </p>
       </div>
     </div>
   );
-} 
+}

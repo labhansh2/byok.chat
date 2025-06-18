@@ -182,11 +182,15 @@ export function createBlock(messageId: string, content: string) {
 let userdefaultModel = "GPT-4";
 
 export async function getUserMetadata() {
-  return {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    defaultModel: userdefaultModel
-  };
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({
+        name: "John Doe",
+        email: "john.doe@example.com",
+        defaultModel: userdefaultModel,
+      });
+    }, 200);
+  });
 }
 
 export async function setUserDefaultModel(model: string) {

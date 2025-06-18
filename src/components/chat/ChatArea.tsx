@@ -2,12 +2,16 @@
 
 import { useChat } from "@/contexts/chat-context";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 
-export default function ChatArea({ chatId }: { chatId: string }) {
-  
-  const { trigger, setRendering } = useChat();
+import ChatAreaPlaceholder from "@/components/chat/ChatAreaPlaceholder";
+
+export default function ChatArea() {
+  const { trigger, setTrigger, setRendering, threadId, setThreadId } = useChat();
 
   const [messages, setMessages] = useState<string>("");
+
+  const pathname = usePathname();
 
   useEffect(() => {
     setRendering(true);
@@ -16,10 +20,13 @@ export default function ChatArea({ chatId }: { chatId: string }) {
     const letters = "abcdefghijklmnopqrstuvwxyz";
     let i = 0;
 
-    setMessages(""); // Clear messages on trigger
+    // setMessages(""); // Clear messages on trigger
 
     interval = setInterval(() => {
-      setMessages((prev:string) => prev + letters[Math.floor(Math.random() * letters.length)]);
+      setMessages(
+        (prev: string) =>
+          prev + letters[Math.floor(Math.random() * letters.length)],
+      );
       i++;
     }, 200);
 
@@ -33,13 +40,14 @@ export default function ChatArea({ chatId }: { chatId: string }) {
       clearInterval(interval);
       clearTimeout(timeout);
     };
-    
-  }, [trigger]);
+  }, [trigger, setTrigger]);
 
-  return (
+  return pathname !== "/" ? (
     <div>
-        <h1>Chat Area for {chatId}</h1>
-        <p>{messages}</p>
+      <h1>Chat Area for {threadId}</h1>
+      <p>{messages}</p>
     </div>
+  ) : (
+    <ChatAreaPlaceholder />
   );
 }

@@ -1,6 +1,12 @@
 "use client";
 
-import { MessageCircle, Lightbulb, Code, FileText, Sparkles } from "lucide-react";
+import {
+  MessageCircle,
+  Lightbulb,
+  Code,
+  FileText,
+  Sparkles,
+} from "lucide-react";
 
 interface ChatAreaProps {
   chatId?: string;
@@ -11,23 +17,23 @@ export default function ChatAreaPlaceholder() {
     {
       icon: <Lightbulb className="w-5 h-5" />,
       title: "Brainstorm ideas",
-      description: "Generate creative solutions for your projects"
+      description: "Generate creative solutions for your projects",
     },
     {
       icon: <Code className="w-5 h-5" />,
       title: "Code assistance",
-      description: "Get help with programming and debugging"
+      description: "Get help with programming and debugging",
     },
     {
       icon: <FileText className="w-5 h-5" />,
       title: "Write content",
-      description: "Create articles, emails, and documentation"
+      description: "Create articles, emails, and documentation",
     },
     {
       icon: <Sparkles className="w-5 h-5" />,
       title: "Creative writing",
-      description: "Stories, poems, and creative content"
-    }
+      description: "Stories, poems, and creative content",
+    },
   ];
 
   return (
@@ -41,7 +47,7 @@ export default function ChatAreaPlaceholder() {
               <MessageCircle className="w-12 h-12 text-primary" />
             </div>
           </div>
-          
+
           <h1 className="text-4xl font-semibold mb-4 bg-gradient-to-r from-primary to-muted-foreground bg-clip-text text-transparent">
             Start a new conversation
           </h1>
@@ -77,10 +83,14 @@ export default function ChatAreaPlaceholder() {
         {/* Bottom Hint */}
         <div className="mt-12 text-center">
           <p className="text-sm text-muted-foreground/70">
-            Type <span className="px-2 py-1 bg-accent/30 rounded text-xs font-mono">#model:</span> to quickly switch AI models
+            Type{" "}
+            <span className="px-2 py-1 bg-accent/30 rounded text-xs font-mono">
+              #model:
+            </span>{" "}
+            to quickly switch AI models
           </p>
         </div>
       </div>
     </div>
   );
-} 
+}

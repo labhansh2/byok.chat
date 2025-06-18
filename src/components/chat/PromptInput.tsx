@@ -2,57 +2,108 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Send, ChevronUp } from "lucide-react";
-import { setDefaultModel } from "@/actions/test";
+import { useRouter } from "next/navigation";
 
 import ModelSelector from "@/components/chat/ModelSelector";
+import { createThread, createMessage, createBlock } from "@/lib/server";
 
-import { useChat } from "@/contexts/chat-context"; 
+import { useChat } from "@/contexts/chat-context";
 import { usePathname } from "next/navigation";
 
-export default function PromptInput({ selectedModel }: { selectedModel: string }) {
-
-  const { trigger, setTrigger, rendering, setRendering } = useChat();
-  const [model, setModel] = useState(selectedModel);
+export default function PromptInput() {
+  const { trigger, setTrigger, rendering, setRendering, model, setModel } =
+    useChat();
   const [message, setMessage] = useState("");
+
+  // input states
   const [showModelSelector, setShowModelSelector] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const modelSelectorRef = useRef<HTMLDivElement>(null);
 
+  // Real-time blocks tracking (behind the scenes)
+  const [realtimeBlocks, setRealtimeBlocks] = useState<string[]>([]);
+
   const pathname = usePathname();
-  
-  console.log("pathname", pathname);  
+  const router = useRouter();
 
   const onModelChange = (model: string) => {
     setModel(model);
-    setDefaultModel(model);
     console.log("Model changed to:", model);
   };
-  
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  // Update blocks in real-time as user types
+  useEffect(() => {
     if (message.trim()) {
-      // onSendMessage(message.trim());
+      const paragraphs = message.split('\n').map(p => p.trim()).filter(p => p.length > 0);
+      setRealtimeBlocks(paragraphs);
+      console.log("Real-time blocks updated:", paragraphs);
+    } else {
+      setRealtimeBlocks([]);
+    }
+  }, [message]);
 
-      // save message to database
-      // createMessage(message.trim());
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!message.trim()) return;
 
-      
+    // Use the real-time blocks that were already created
+    const blocksToSubmit = realtimeBlocks;
 
-      setMessage("");
-      // Reset textarea height after sending
-      if (textareaRef.current) {
-        textareaRef.current.style.height = "auto";
+    if (pathname === "/") {
+      // Create new thread with all blocks
+      try {
+        // Generate title from first block
+        const title = blocksToSubmit[0].substring(0, 50) + (blocksToSubmit[0].length > 50 ? "..." : "");
+        
+        // Create thread
+        const thread = createThread(title);
+        console.log("Created thread:", thread);
+
+        // Create user message
+        const userMessage = createMessage(thread.id);
+        console.log("Created message:", userMessage);
+
+        // Create blocks for each paragraph
+        const createdBlocks = blocksToSubmit.map(blockContent => 
+          createBlock(userMessage.id, blockContent)
+        );
+        console.log("Created blocks:", createdBlocks);
+
+        // Route to the new thread
+        router.push(`/chat/${thread.id}`);
+      } catch (error) {
+        console.error("Error creating thread:", error);
       }
-      // if pathname is /chat/new, redirect to /chat/id
-      // if (pathname === "/") {
-      //   router.push(`/chat/${chatId}`);
-      // }
+    } else {
+      // Handle existing thread - extract thread ID from pathname
+      const threadId = pathname.split('/')[2];
+      if (threadId) {
+        try {
+          // Create user message for existing thread
+          const userMessage = createMessage(threadId);
+          console.log("Created message for existing thread:", userMessage);
 
-      setRendering(true);
-      setTrigger(Math.random() > 0.5 ? trigger + 1 : trigger - 1);
+          // Create blocks for each paragraph
+          const createdBlocks = blocksToSubmit.map(blockContent => 
+            createBlock(userMessage.id, blockContent)
+          );
+          console.log("Created blocks:", createdBlocks);
+        } catch (error) {
+          console.error("Error creating message:", error);
+        }
+      }
     }
 
+    // Reset states
+    setMessage("");
+    setRealtimeBlocks([]);
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+    }
+
+    setRendering(true);
+    setTrigger(Math.random() > 0.5 ? trigger + 1 : trigger - 1);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -60,6 +111,7 @@ export default function PromptInput({ selectedModel }: { selectedModel: string }
       e.preventDefault();
       handleSubmit(e);
     }
+    // Shift+Enter will naturally create new lines - blocks will be updated via useEffect
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -81,7 +133,7 @@ export default function PromptInput({ selectedModel }: { selectedModel: string }
   };
 
   const handleModelSelect = (model: string) => {
-    onModelChange?.(model);
+    onModelChange(model);
     setShowModelSelector(false);
     // Focus back on textarea
     textareaRef.current?.focus();
@@ -131,7 +183,7 @@ export default function PromptInput({ selectedModel }: { selectedModel: string }
               value={message}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
-              placeholder="Type your message..."
+              placeholder="Type your message... (Shift+Enter for new line)"
               className="w-full min-h-[60px] max-h-48 px-4 py-4 resize-none focus:outline-none bg-transparent overflow-hidden"
               rows={1}
             />
@@ -159,7 +211,12 @@ export default function PromptInput({ selectedModel }: { selectedModel: string }
             </div>
           </div>
         </form>
+
+        {/* Helper text */}
+        <div className="mt-2 text-xs text-muted-foreground text-center">
+          Press Shift+Enter for new lines, Enter to send message
+        </div>
       </div>
     </div>
   );
-} 
+}

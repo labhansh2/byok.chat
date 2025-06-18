@@ -14,7 +14,7 @@ export default function History({ threads }: { threads: Promise<Thread[]> }) {
           </h2>
         </div>
         {/* <Suspense fallback={<ThreadTilesSkeleton />}> */}
-          <ThreadTiles threads={threads} />
+        <ThreadTiles threads={threads} />
         {/* </Suspense> */}
       </div>
     </div>

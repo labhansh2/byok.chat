@@ -12,7 +12,7 @@ export default function ThreadTiles({
 }) {
   const threadsList = use(threads);
   const router = useRouter();
-  const { activeThread, setActiveThread} = useSidebar();
+  const { activeThread, setActiveThread } = useSidebar();
 
   const handleClick = (id: string) => {
     setActiveThread(id);
