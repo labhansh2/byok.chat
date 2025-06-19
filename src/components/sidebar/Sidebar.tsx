@@ -68,7 +68,7 @@ export default function Sidebar() {
           </Link>
         </div>
       </div>
-      
+
       {/* Content Area - flex-1 to take remaining space */}
       <div className="flex-1 flex flex-col">
         <SidebarProvider refreshThreads={loadThreads}>
@@ -76,7 +76,7 @@ export default function Sidebar() {
           <ContentArea threads={threads} />
         </SidebarProvider>
       </div>
-      
+
       {/* Auth Section at the bottom */}
       <AuthSection />
     </div>

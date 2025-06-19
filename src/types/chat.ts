@@ -15,7 +15,7 @@ export interface Message {
   id: string;
   threadId: string;
   role: MessageRole;
-  // model: string; // Add this while implementing the database 
+  // model: string; // Add this while implementing the database
   createdAt: Date;
   updatedAt: Date;
 }
