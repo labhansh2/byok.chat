@@ -4,18 +4,18 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 
 import Nav from "./Nav";
-import History from "./history/History";
-import Extensions from "./extensions/Extensions";
 import AuthSection from "./AuthSection";
 
 import { SidebarProvider } from "@/contexts/sidebar-context";
 import ContentArea from "./ContentArea";
 import { getThreads } from "@/lib/server";
-import { Thread } from "@/types/chat";
 import { usePathname, useRouter } from "next/navigation";
+import { useGlobalStore } from "@/store/global";
+
 
 export default function Sidebar() {
-  const [threads, setThreads] = useState<Thread[]>([]);
+  
+  const {threads, setThreads} = useGlobalStore();
   const [isLoading, setIsLoading] = useState(true);
 
   const pathname = usePathname();
@@ -23,6 +23,7 @@ export default function Sidebar() {
 
   const loadThreads = async () => {
     try {
+      // we will have to race here
       const threadData = await getThreads();
       setThreads(threadData);
     } catch (error) {
@@ -41,10 +42,6 @@ export default function Sidebar() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
-  useEffect(() => {
-    loadThreads();
-  }, []);
-
   return (
     <div className="flex flex-col h-full w-[256px] border-r border-border">
       {/* Header */}
@@ -52,12 +49,6 @@ export default function Sidebar() {
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-lg font-semibold text-foreground">byok.chat</h1>
           {/* TODO : add toggle button */}
-          {/* <button
-            className="p-1 rounded-md hover:bg-accent transition-colors text-muted-foreground hover:text-foreground"
-            title="(⌘+B / Ctrl+B)"
-          >
-          <HamburgerIcon size={16} />
-          </button> */}
         </div>
         <div className="w-full">
           <Link
@@ -69,7 +60,6 @@ export default function Sidebar() {
         </div>
       </div>
 
-      {/* Content Area - flex-1 to take remaining space */}
       <div className="flex-1 flex flex-col">
         <SidebarProvider refreshThreads={loadThreads}>
           <Nav />

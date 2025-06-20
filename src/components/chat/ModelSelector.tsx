@@ -11,12 +11,22 @@ interface ModelSelectorProps {
 
 // Mock model data - you can replace this with real data later
 const SAMPLE_MODELS = [
-  { id: "gpt-4", name: "GPT-4", provider: "OpenAI" },
-  { id: "gpt-3.5-turbo", name: "GPT-3.5 Turbo", provider: "OpenAI" },
-  { id: "claude-3-opus", name: "Claude 3 Opus", provider: "Anthropic" },
-  { id: "claude-3-sonnet", name: "Claude 3 Sonnet", provider: "Anthropic" },
-  { id: "gemini-pro", name: "Gemini Pro", provider: "Google" },
-  { id: "llama-2-70b", name: "Llama 2 70B", provider: "Meta" },
+  { id: "openai/gpt-4o", name: "GPT-4o", provider: "OpenAI" },
+  { id: "anthropic/claude-3-opus", name: "Claude 3 Opus", provider: "Anthropic" },
+  { id: "anthropic/claude-3-sonnet", name: "Claude 3 Sonnet", provider: "Anthropic" },
+  { id: "anthropic/claude-3-haiku", name: "Claude 3 Haiku", provider: "Anthropic" },
+  { id: "anthropic/claude-3-5-sonnet", name: "Claude 3.5 Sonnet", provider: "Anthropic" },
+  { id: "google/gemini-pro", name: "Gemini Pro", provider: "Google" },
+  { id: "google/gemini-1.5-pro", name: "Gemini 1.5 Pro", provider: "Google" },
+  { id: "google/gemini-1.5-flash", name: "Gemini 1.5 Flash", provider: "Google" },
+  { id: "meta-llama/llama-2-70b-chat", name: "Llama 2 70B", provider: "Meta" },
+  { id: "meta-llama/llama-3-70b-instruct", name: "Llama 3 70B", provider: "Meta" },
+  { id: "meta-llama/llama-3-8b-instruct", name: "Llama 3 8B", provider: "Meta" },
+  { id: "mistralai/mixtral-8x7b-instruct", name: "Mixtral 8x7B", provider: "Mistral" },
+  { id: "mistralai/mixtral-8x22b-instruct", name: "Mixtral 8x22B", provider: "Mistral" },
+  { id: "mistralai/mistral-large", name: "Mistral Large", provider: "Mistral" },
+  { id: "mistralai/mistral-medium", name: "Mistral Medium", provider: "Mistral" },
+  { id: "mistralai/mistral-small", name: "Mistral Small", provider: "Mistral" },
 ];
 
 export default function ModelSelector({

@@ -4,11 +4,14 @@ import { useUser, useClerk } from "@clerk/nextjs";
 import { useState } from "react";
 import { LogOut, User } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 
 export default function AuthSection() {
   const { isSignedIn, user } = useUser();
   const { signOut } = useClerk();
   const [showDropdown, setShowDropdown] = useState(false);
+  const router = useRouter();
 
   if (!isSignedIn) {
     return (
@@ -63,6 +66,7 @@ export default function AuthSection() {
               onClick={() => {
                 signOut();
                 setShowDropdown(false);
+                router.push("/sign-in");
               }}
               className="w-full flex items-center gap-2 p-3 text-sm text-[#fafafa] hover:bg-[#27272a]/50 rounded-md transition-colors"
             >

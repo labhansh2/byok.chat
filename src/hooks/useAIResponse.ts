@@ -30,11 +30,24 @@ export function useAIResponse({
   const getOpenRouterModelName = (modelName: string): string => {
     const modelMap: Record<string, string> = {
       "GPT-4": "openai/gpt-4",
+      "GPT-4 Turbo": "openai/gpt-4-turbo",
+      "GPT-4o": "openai/gpt-4o",
       "GPT-3.5 Turbo": "openai/gpt-3.5-turbo",
       "Claude 3 Opus": "anthropic/claude-3-opus",
-      "Claude 3 Sonnet": "anthropic/claude-3-5-sonnet",
+      "Claude 3 Sonnet": "anthropic/claude-3-sonnet",
+      "Claude 3 Haiku": "anthropic/claude-3-haiku",
+      "Claude 3.5 Sonnet": "anthropic/claude-3-5-sonnet",
       "Gemini Pro": "google/gemini-pro",
+      "Gemini 1.5 Pro": "google/gemini-1.5-pro",
+      "Gemini 1.5 Flash": "google/gemini-1.5-flash",
       "Llama 2 70B": "meta-llama/llama-2-70b-chat",
+      "Llama 3 70B": "meta-llama/llama-3-70b-instruct",
+      "Llama 3 8B": "meta-llama/llama-3-8b-instruct",
+      "Mixtral 8x7B": "mistralai/mixtral-8x7b-instruct",
+      "Mixtral 8x22B": "mistralai/mixtral-8x22b-instruct",
+      "Mistral Large": "mistralai/mistral-large",
+      "Mistral Medium": "mistralai/mistral-medium",
+      "Mistral Small": "mistralai/mistral-small",
     };
 
     return modelMap[modelName] || "google/gemini-2.0-flash-001"; // Default fallback
